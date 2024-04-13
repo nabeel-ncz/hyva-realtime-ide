@@ -10,14 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@monaco-editor/react": "^4.6.0",
+    "ace-builds": "^1.33.0",
     "react": "^18.2.0",
+    "react-ace": "^11.0.1",
     "react-dom": "^18.2.0",
-    "y-monaco": "^0.1.5",
-    "y-webrtc": "^10.3.0",
-    "yjs": "^13.6.14"
+    "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^6.22.3",
+    "socket.io-client": "^4.7.5",
+    "web-vitals": "^3.5.2"
   },
   "devDependencies": {
+    "@types/node": "^20.12.7",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
