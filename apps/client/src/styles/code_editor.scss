@@ -1,0 +1,122 @@
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.room-gradient-1 {
+    --size: 600px;
+    --speed: 10s;
+    --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
+    width: var(--size);
+    height: var(--size);
+    filter: blur(calc(var(--size) / 5));
+    background-image: linear-gradient(hsla(221, 82%, 57%, 0.4), hsl(252, 82%, 12%));
+    animation: rotate var(--speed) var(--easing) alternate infinite;
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    position: absolute;
+    top: -12rem;
+    right: -12rem;
+}
+.room-gradient-2 {
+    --size: 600px;
+    --speed: 10s;
+    --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
+    width: var(--size);
+    height: var(--size);
+    filter: blur(calc(var(--size) / 5));
+    background-image: linear-gradient(hsla(221, 82%, 57%, 0.4), hsl(252, 82%, 20%));
+    animation: rotate var(--speed) var(--easing) alternate infinite;
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    position: absolute;
+    bottom: -12rem;
+    left: -12rem;
+}
+
+@media (min-width: 720px) {
+    .gradient {
+        --size: 500px;
+    }
+}
+
+.room {
+    width: 100vw;
+    min-height: 100vh;
+    background-color: #0b0b0b;
+    position: relative;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    place-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    .room-sidebar {
+        display: flex;
+        width: 100%;
+        padding-left: 13.8rem;
+        margin: 0.5rem 0;
+        gap: 1rem;
+
+        select,
+        button {
+            display: flex;
+            align-items: center;
+            justify-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 0.2rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-weight: 600;
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(1rem);
+
+        }
+    }
+
+    .room-container {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 1rem;
+
+        .left {
+            width: 400px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            justify-content: center;
+            gap: 1rem;
+
+            .room-sidebar-users {
+                width: 100%;
+                min-height: 300px;
+                background-color: rgba(17, 17, 17);
+                color: white;
+                backdrop-filter: blur(1rem);
+                padding: 0.5rem 2rem;
+                border: none;
+                border-radius: 0.2rem;
+                overflow-y: scroll;
+            }
+
+            .console {
+                width: 100%;
+                min-height: 245px;                
+                background-color: rgba(17, 17, 17);
+                color: white;
+                backdrop-filter: blur(1rem);
+                padding: 0.5rem 2rem;
+                border: none;
+                border-radius: 0.2rem;
+                overflow-y: scroll;
+            }
+        }
+
+    }
+}
