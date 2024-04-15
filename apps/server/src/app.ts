@@ -1,5 +1,6 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import {
+    getAuth,
     signInWithGoogle,
     signInWithGoogleFailed,
     signInWithGoogleRedirect,
@@ -22,6 +23,7 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Hey Nabeel!');
 });
 
+app.get('/auth', getAuth);
 app.get('/oauth2/google', signInWithGoogle());
 app.get('/oauth2/google/redirect', signInWithGoogleRedirect());
 app.get('/oauth2/google/success', signInWithGoogleSuccess);
