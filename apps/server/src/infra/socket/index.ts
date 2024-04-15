@@ -2,9 +2,12 @@ import { Server, Socket } from "socket.io";
 
 export const socketEventHandler = (io: Server) => {
     const socketIdToUsersMap: { [key: string]: { username: string } } = {};
-    const roomIdToCodeMap = {};
+    const roomIdToCodeMap: { [key: string]: { 
+        languageUsed?: string;
+        code?: string;
+     } } = {};
 
-    async function getUsersInRoom(roomId: string, io) {
+    async function getUsersInRoom(roomId: string, io: Server) {
         const socketList = await io.in(roomId).allSockets()
         const userslist: string[] = []
         socketList.forEach(((each: string) => {
