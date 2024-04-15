@@ -1,2 +1,4 @@
 import passport from "passport";
-export const signInWithGoogle = passport.authenticate('google', { scope: ['profile', 'email'] });
+export const signInWithGoogle = () => {
+    return passport.authenticate('google', { scope: ['profile', 'email'] });
+}

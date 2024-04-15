@@ -8,6 +8,7 @@ import {
 import cors from "cors";
 import passport from "passport";
 import session from "express-session";
+import "./utils/passport/googleOAuth2Strategy";
 const app: Application = express();
 
 app.use(cors());
@@ -21,8 +22,8 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Hey Nabeel!');
 });
 
-app.get('/oauth2/google', signInWithGoogle);
-app.get('/oauth2/google/redirect', signInWithGoogleRedirect);
+app.get('/oauth2/google', signInWithGoogle());
+app.get('/oauth2/google/redirect', signInWithGoogleRedirect());
 app.get('/oauth2/google/success', signInWithGoogleSuccess);
 app.get('/oauth2/google/failed', signInWithGoogleFailed);
 
