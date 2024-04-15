@@ -1,29 +1,24 @@
-import express, { Application, Request, Response } from "express";
-import { socketEventHandler } from "./infra/socket";
+require('dotenv').config();
 import { Server } from "socket.io";
-import http from "http";
-import cors from "cors";
+import StartApplication, { server } from "./app";
+import { socketEventHandler } from "./infra/socket";
+import { connectToDatabase } from "./database";
 
-const app: Application = express();
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-const server = http.createServer(app);
-
-const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
+(async () => {
+    try {
+        StartApplication;
+        await connectToDatabase();
+        const io = new Server(server, {
+            cors: {
+                origin: "*",
+                methods: ["GET", "POST"]
+            }
+        });
+        socketEventHandler(io);
+        process.on('SIGTERM', async () => {
+            throw new Error("SIGTERM recieved");
+        })
+    } catch (error) {
+        console.error(error);
     }
-});
-
-app.get('/', (req: Request, res: Response) => {
-    res.send('Hey Nabeel!');
-});
-
-socketEventHandler(io);
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`listening on port : ${PORT}`);
-});
+})();
