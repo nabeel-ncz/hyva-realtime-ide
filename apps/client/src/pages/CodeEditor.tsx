@@ -64,10 +64,6 @@ export default function CodeEditor() {
   }
 
   useEffect(() => {
-    socket.emit("when a user joins", { roomId: `room@1`, username: `user@${Math.random() * 20 + 838}` });
-  }, []);
-
-  useEffect(() => {
     socket.on("updating_client_list", ({ userslist }) => {
       setFetchedUsers(userslist)
     })
