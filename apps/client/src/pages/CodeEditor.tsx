@@ -154,8 +154,8 @@ export default function CodeEditor() {
               <p>Connected Users:</p>
               {fetchedUsers.map((each) => (
                 <div key={each} className="room-sidebar-users-each">
-                  <div className="room-sidebar-users-each-avatar" style={{ backgroundColor: `${generateColor(each)}` }}>{each.slice(0, 2).toUpperCase()}</div>
-                  <div className="room-sidebar-user-each-name">{each}</div>
+                  <div className="avatar" style={{ backgroundColor: `${generateColor(each)}` }}>{each.slice(0, 2).toUpperCase()}</div>
+                  <div className="name">{each}</div>
                 </div>
               ))}
             </div>
