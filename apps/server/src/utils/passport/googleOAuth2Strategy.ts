@@ -1,11 +1,12 @@
 import passport from "passport"
 import { Strategy } from "passport-google-oauth20";
+import { User } from "../../database/models/user";
 
 passport.serializeUser((user, done) => {
     done(null, user);
 })
-passport.deserializeUser((user, done) => {
-    done(null, user);
+passport.deserializeUser((user , done) => {
+    done(null, user as Express.User);
 })
 
 passport.use(new Strategy({
@@ -21,16 +22,13 @@ passport.use(new Strategy({
             done(null, existingUser);
         } else {
             const newUser = await new User({
-                name: profile.displayName,
-                email: profile._json.email,
-                password: profile.id,
-                verified: true,
-                oauth: true,
-                createdAt: Date.now(),
+                username: profile.displayName,
+                email: profile._json.email
             }).save();
             done(null, newUser);
         }
     } catch (error) {
-        done(error, null);
+        const err = error as Error;
+        done(err, undefined);
     }
 }));
