@@ -12,7 +12,7 @@ import { envChecker } from "./utils/envChecker";
         await connectToDatabase();
         const io = new Server(server, {
             cors: {
-                origin: "*",
+                origin: process.env.CLIENT_URL as string,
                 methods: ["GET", "POST"]
             }
         });
