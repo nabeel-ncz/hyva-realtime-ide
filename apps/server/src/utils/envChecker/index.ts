@@ -14,4 +14,7 @@ export const envChecker = async () => {
     if(!process.env.GOOGLE_REDIRECT_URL) {
         throw new Error("Google redirect url is required!");
     }
+    if(!process.env.SESSION_SECRET) {
+        throw new Error("Session secret is required");
+    }
 }
