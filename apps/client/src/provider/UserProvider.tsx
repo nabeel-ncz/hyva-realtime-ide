@@ -9,21 +9,24 @@ interface InitialContextType {
     } | null,
     loading: boolean;
     error: Error | null;
+    setData: any;
 }
 
 export const UserContext = createContext<InitialContextType>({
     data: null,
     loading: false,
-    error: null
+    error: null,
+    setData: () => { }
 });
 
 export default function UserProvider({ children }: { children: React.ReactNode }) {
-    const { data, loading, error } = useAxios({ url: '/auth', method: 'get' });
+    const { data, loading, error, setData } = useAxios({ url: '/auth', method: 'get' });
     return (
         <UserContext.Provider value={{
             data,
             loading,
-            error
+            error,
+            setData
         }}>
             {children}
         </UserContext.Provider>

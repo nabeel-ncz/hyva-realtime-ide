@@ -31,7 +31,7 @@ const useAxios = (options: {
         };
         fetchData();
     }, []);
-    return { data, loading, error };
+    return { data, loading, error, setData, setLoading, setError };
 };
 
 export default useAxios;
