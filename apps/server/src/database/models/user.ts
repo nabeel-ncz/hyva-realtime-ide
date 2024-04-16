@@ -8,8 +8,7 @@ interface UserEntity {
 const userSchema = new Schema({
     username: {
         type: String,
-        required: true,
-        index: true
+        required: true
     },
     email: {
         type: String,

@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
 import { generateAccessToken } from "../utils/jwt/generateAccessToken";
-
-interface AuthenticatedRequest extends Request {
-    user?: { _id: string }
-}
+import { AuthenticatedRequest } from "../utils/types";
 
 export const signInWithGoogleSuccess = async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
