@@ -20,7 +20,7 @@ export default function SocketProvider({ children }: { children: React.ReactNode
         if (!id || !user) {
             navigate("/", { replace: true });
         }
-        socket.emit("user_join", { roomId: `${id}`, username: `${user?.username}` });
+        socket.emit("user_join", { roomId: `${id}`, username: `${user?.email}` });
     }, []);
     return (
         <SocketContext.Provider value={{ socket }}>

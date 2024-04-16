@@ -23,7 +23,7 @@ import "ace-builds/src-noconflict/ext-searchbox";
 export default function CodeEditor() {
 
   const navigate = useNavigate();
-  const { id = "room@1" } = useParams();
+  const { id } = useParams();
   const { socket } = useContext(SocketContext);
   const [fetchedUsers, setFetchedUsers] = useState<string[]>([]);
   const [fetchedCode, setFetchedCode] = useState<string>("");
@@ -41,8 +41,8 @@ export default function CodeEditor() {
 
   function handleLanguageChange(e: React.ChangeEvent<HTMLSelectElement>) {
     setLanguage(e.target.value)
-    socket.emit("update_language", { id, languageUsed: e.target.value })
-    socket.emit("sync_language", { id: id });
+    socket.emit("update_language", { roomId: id, languageUsed: e.target.value })
+    socket.emit("sync_language", { roomId: id });
   }
 
   function handleCodeKeybindingChange(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -57,7 +57,9 @@ export default function CodeEditor() {
   function copyToClipboard(text: string) {
     try {
       navigator.clipboard.writeText(text);
-      toast.success('Editor Room Id Edited');
+      toast.success('Room Id copied to clipboard', {
+        position: 'top-right'
+      });
     } catch (err) {
       console.error(err);
     }
@@ -77,11 +79,11 @@ export default function CodeEditor() {
     })
 
     socket.on("new_member_joined", ({ username }) => {
-      toast(`${username} joined`)
+      toast(`${username} joined`, { position: "top-right" });
     })
 
     socket.on("member_left", ({ username }) => {
-      toast(`${username} left`)
+      toast(`${username} left`, { position: "top-right" });
     });
 
     const backButtonEventListner = window.addEventListener("popstate", function (e) {
@@ -90,7 +92,6 @@ export default function CodeEditor() {
         socket.disconnect()
       }
     });
-
     return () => {
       window.removeEventListener("popstate", backButtonEventListner as any);
     }
@@ -120,7 +121,7 @@ export default function CodeEditor() {
         <div className="room-container">
           <div className="room-editor">
             <AceEditor
-              setOptions={{ useWorker: false, fontSize:"18px" }}
+              setOptions={{ useWorker: false, fontSize: "18px" }}
               placeholder="Write your code here."
               className="roomCodeEditor"
               mode={language}
