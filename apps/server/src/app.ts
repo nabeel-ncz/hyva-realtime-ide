@@ -1,15 +1,12 @@
 import express, { Application, NextFunction, Request, Response } from "express";
-import {
-    getAuth,
-    signInWithGoogle,
-    signInWithGoogleFailed,
-    signInWithGoogleRedirect,
-    signInWithGoogleSuccess
-} from "./controllers";
 import cors from "cors";
 import passport from "passport";
 import session from "express-session";
 import "./utils/passport/googleOAuth2Strategy";
+import swagger from "swagger-ui-express";
+import { swaggerSpecs } from "./utils/swagger";
+import ApplicationRoutes from "./routes";
+
 const app: Application = express();
 const corsOptions = {
     origin: process.env.CLIENT_URL as string,
@@ -27,11 +24,9 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Hey Nabeel!');
 });
 
-app.get('/auth', getAuth);
-app.get('/oauth2/google', signInWithGoogle());
-app.get('/oauth2/google/redirect', signInWithGoogleRedirect());
-app.get('/oauth2/google/success', signInWithGoogleSuccess);
-app.get('/oauth2/google/failed', signInWithGoogleFailed);
+app.use('/api-docs', swagger.serve, swagger.setup(swaggerSpecs));
+
+app.use(ApplicationRoutes);
 
 app.get("*", (req: Request, res: Response, next: NextFunction) => {
     res.status(404).send("Page not found!");
