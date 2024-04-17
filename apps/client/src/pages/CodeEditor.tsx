@@ -35,6 +35,15 @@ export default function CodeEditor() {
   const [language, setLanguage] = useState<string>("javascript");
   const [codeKeybinding, setCodeKeybinding] = useState<any>(undefined);
   const [saveFileOpen, setSaveFileOpen] = useState<boolean>(false);
+  const [output, setOutput] = useState<{
+    out: string;
+    loading: boolean;
+    success: boolean;
+  }>({
+    out: '',
+    loading: false,
+    success: false
+  });
 
   useEffect(() => {
     let saved = Boolean(searchParams.get('saved'));
@@ -137,6 +146,32 @@ export default function CodeEditor() {
     });
   };
 
+  const handleRunCode = () => {
+    setOutput((state) => ({
+      ...state,
+      loading: true
+    }));
+    apiClient.post('/run-code', {
+      language: language === 'javascript' ? 'node' : language,
+      content: fetchedCode
+    }, {
+      withCredentials: true
+    }).then((res) => {
+      setOutput((state) => ({
+        ...state,
+        out: res.data?.out,
+        success: res.data?.success
+      }));
+    }).catch(() => {
+      toast.error('Something went wrong in running code!');
+    }).finally(() => {
+      setOutput((state) => ({
+        ...state,
+        loading: false
+      }));
+    })
+  }
+
   return (
     <>
       <div className="room">
@@ -161,6 +196,7 @@ export default function CodeEditor() {
           <button onClick={() => {
             navigate('/saved')
           }}>Saved Files</button>
+          <button onClick={handleRunCode}>Run</button>
           <button>Logout</button>
         </div>
         <div className="room-container">
@@ -203,6 +239,30 @@ export default function CodeEditor() {
             </div>
             <div className="console">
               <p>output</p>
+              {output.loading ? (
+                <>
+                  <h2>Loading....</h2>
+                </>
+              ) : (
+                <>
+                  {output.success ? (
+                    <>
+                      <h2 style={{ color: "green" }}>success</h2>
+                      <p>{output.out}</p>
+                    </>
+                  ) : (
+                    <>
+                      {output.out.length > 0 && (
+                        <>
+                          <h2 style={{ color: "red" }}>error</h2>
+                          <p>{output.out}</p>
+                        </>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+              <p></p>
             </div>
           </div>
         </div>
