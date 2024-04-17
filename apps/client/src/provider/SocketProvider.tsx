@@ -16,7 +16,7 @@ export const SocketContext = createContext<InitialContextType>({ socket });
 export default function SocketProvider({ children }: { children: React.ReactNode }) {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { data: user } = useContext(UserContext);
+    const user = useContext(UserContext).data;
     useEffect(() => {
         if (!id) {
             navigate("/", { replace: true });

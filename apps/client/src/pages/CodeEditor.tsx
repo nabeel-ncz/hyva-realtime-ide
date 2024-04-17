@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { SocketContext } from "../provider/SocketProvider";
 import CodeKeyBindingSelector from "../components/CodeKeyBindingSelector";
 import LanguageChanger from "../components/LanguageChanger";
@@ -19,16 +19,32 @@ import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/theme-vibrant_ink";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/ext-searchbox";
+import { apiClient } from "../utils/axios";
+import { UserContext } from "../provider/UserProvider";
+import SaveFileModal from "../components/SaveFileModal";
 
 export default function CodeEditor() {
 
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const { socket } = useContext(SocketContext);
+  const { data: user } = useContext(UserContext);
   const [fetchedUsers, setFetchedUsers] = useState<string[]>([]);
   const [fetchedCode, setFetchedCode] = useState<string>("");
   const [language, setLanguage] = useState<string>("javascript");
   const [codeKeybinding, setCodeKeybinding] = useState<any>(undefined);
+  const [saveFileOpen, setSaveFileOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    let saved = Boolean(searchParams.get('saved'));
+    let _id = searchParams.get('_id');
+    if (saved && _id) {
+      apiClient.get(`/code/${_id}`, { withCredentials: true }).then((res) => {
+        setFetchedCode(res.data?.content);
+      });
+    };
+  }, []);
 
   const languagesAvailable: string[] = ["javascript", "java", "c_cpp", "python", "typescript", "golang", "yaml", "html"]
   const codeKeybindingsAvailable: string[] = ["default", "emacs", "vim"];
@@ -95,7 +111,31 @@ export default function CodeEditor() {
     return () => {
       window.removeEventListener("popstate", backButtonEventListner as any);
     }
-  }, [socket])
+  }, [socket]);
+
+
+  const handleSave = (title: string) => {
+    if (!title || title.length < 4) {
+      return toast.error('Title should contain atleast 4 characters', {
+        position: 'top-right'
+      });
+    };
+    apiClient.post('/code', {
+      title: title,
+      content: fetchedCode.length > 0 ? fetchedCode : "//Empty",
+      userRef: user?._id
+    }, { withCredentials: true }).then(() => {
+      toast.success('Code saved successfully, Please check on saved files', {
+        position: 'top-right'
+      })
+    }).catch(() => {
+      toast.error('Something went wrong in saving code, Please try again', {
+        position: 'top-right'
+      });
+    }).finally(() => {
+      setSaveFileOpen(false);
+    });
+  };
 
   return (
     <>
@@ -117,6 +157,11 @@ export default function CodeEditor() {
           <button onClick={() => {
             handleLeave()
           }}>Leave</button>
+          <button onClick={() => { setSaveFileOpen((state) => !state) }}>Save</button>
+          <button onClick={() => {
+            navigate('/saved')
+          }}>Saved Files</button>
+          <button>Logout</button>
         </div>
         <div className="room-container">
           <div className="room-editor">
@@ -162,6 +207,9 @@ export default function CodeEditor() {
           </div>
         </div>
       </div>
+      <SaveFileModal open={saveFileOpen} handleSubmit={handleSave} closeModal={() => {
+        setSaveFileOpen(false);
+      }} />
     </>
   )
 }
