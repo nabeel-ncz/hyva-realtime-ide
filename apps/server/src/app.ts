@@ -2,6 +2,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import cors from "cors";
 import passport from "passport";
 import session from "express-session";
+import cookieParser from "cookie-parser";
 import "./utils/passport/googleOAuth2Strategy";
 import swagger from "swagger-ui-express";
 import { swaggerSpecs } from "./utils/swagger";
@@ -16,6 +17,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(session({ secret: process.env.SESSION_SECRET as string, resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());

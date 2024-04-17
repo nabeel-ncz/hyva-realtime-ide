@@ -10,6 +10,7 @@ import {
     updateCode
 } from "../controllers";
 import { requireAuth } from "../middlewares/requireAuth";
+import { getCodeById } from "../controllers/getCodeById";
 const router = express.Router();
 /**
  * @swagger
@@ -157,6 +158,8 @@ router.post('/api/code', requireAuth, postCode);
  *                   format: date-time
  */
 router.put('/api/code', requireAuth, updateCode);
+
+router.get('/api/code/:id', requireAuth, getCodeById);
 
 
 export default router;
