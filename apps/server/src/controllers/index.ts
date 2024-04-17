@@ -6,3 +6,5 @@ export * from "./getAuth";
 export * from "./postCode";
 export * from "./updateCode";
 export * from "./getCodeByUserId";
+export * from "./runCode";
+export * from "./getCodeById";

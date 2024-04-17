@@ -7,10 +7,11 @@ import {
     signInWithGoogleFailed,
     signInWithGoogleRedirect,
     signInWithGoogleSuccess,
-    updateCode
+    updateCode,
+    getCodeById,
+    runCode
 } from "../controllers";
 import { requireAuth } from "../middlewares/requireAuth";
-import { getCodeById } from "../controllers/getCodeById";
 const router = express.Router();
 /**
  * @swagger
@@ -160,6 +161,8 @@ router.post('/api/code', requireAuth, postCode);
 router.put('/api/code', requireAuth, updateCode);
 
 router.get('/api/code/:id', requireAuth, getCodeById);
+
+router.post('/api/run-code', requireAuth, runCode)
 
 
 export default router;
