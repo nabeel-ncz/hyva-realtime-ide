@@ -7,7 +7,7 @@ export default function EditorJoinModal({ open }: { open: boolean }) {
     const navigate = useNavigate();
     const [text, setText] = useState<string>("");
     const handleJoin = () => {
-        if(text.length < 36) {
+        if (text.length < 36) {
             return toast.error("Room doesn't exist", {
                 position: 'top-right'
             });
@@ -21,9 +21,9 @@ export default function EditorJoinModal({ open }: { open: boolean }) {
         <>
             <div className="editor_join_container" style={{ display: `${open ? 'flex' : 'none'}` }}>
                 <div className="modal">
-                    <div onClick={handleJoin} className="join_existing">
-                        <input value={text} onChange={(evt) => {setText(evt.target.value)}} type="text" />
-                        <h2>Join existing room</h2>
+                    <div className="join_existing">
+                        <input value={text} onChange={(evt) => { setText(evt.target.value) }} type="text" />
+                        <h2 onClick={handleJoin} >Join existing room</h2>
                     </div>
                     <h2>OR</h2>
                     <div onClick={handleCreate} className="create_room">

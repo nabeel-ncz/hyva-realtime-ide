@@ -20,8 +20,8 @@ import "ace-builds/src-noconflict/theme-vibrant_ink";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/ext-searchbox";
 import { apiClient } from "../utils/axios";
-import { UserContext } from "../provider/UserProvider";
 import SaveFileModal from "../components/SaveFileModal";
+import useAxios from "../hooks/useAxios";
 
 export default function CodeEditor() {
 
@@ -29,12 +29,12 @@ export default function CodeEditor() {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const { socket } = useContext(SocketContext);
-  const { data: user } = useContext(UserContext);
   const [fetchedUsers, setFetchedUsers] = useState<string[]>([]);
   const [fetchedCode, setFetchedCode] = useState<string>("");
   const [language, setLanguage] = useState<string>("javascript");
   const [codeKeybinding, setCodeKeybinding] = useState<any>(undefined);
   const [saveFileOpen, setSaveFileOpen] = useState<boolean>(false);
+  const { data: user } = useAxios({ url: '/auth', method: 'get' });
   const [output, setOutput] = useState<{
     out: string;
     loading: boolean;
@@ -44,6 +44,7 @@ export default function CodeEditor() {
     loading: false,
     success: false
   });
+
 
   useEffect(() => {
     let saved = Boolean(searchParams.get('saved'));
@@ -76,7 +77,7 @@ export default function CodeEditor() {
 
   function handleLeave() {
     socket.disconnect();
-    !socket.connected && navigate('/', { replace: true, state: {} });
+    !socket.connected && window.location.replace("/");
   }
 
   function copyToClipboard(text: string) {
@@ -172,6 +173,15 @@ export default function CodeEditor() {
     })
   }
 
+  const handleLogout = () => {
+    apiClient.delete('/auth', { withCredentials: true }).then(() => {
+      navigate('/');
+      toast.success('Successfully Logged-Out', {position: 'top-right'});
+    }).catch(() => {
+      toast.error(`Something went wrong, Try again`, { position: 'top-right' });
+    });
+  };
+
   return (
     <>
       <div className="room">
@@ -197,7 +207,7 @@ export default function CodeEditor() {
             navigate('/saved')
           }}>Saved Files</button>
           <button onClick={handleRunCode}>Run</button>
-          <button>Logout</button>
+          <button onClick={handleLogout}>Logout</button>
         </div>
         <div className="room-container">
           <div className="room-editor">

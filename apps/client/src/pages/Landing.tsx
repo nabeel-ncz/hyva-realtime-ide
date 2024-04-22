@@ -1,12 +1,12 @@
-import { useContext, useState } from "react"
+import { useState } from "react";
 import CreateAccountModal from "../components/CreateAccountModal";
-import { UserContext } from "../provider/UserProvider";
 import EditorJoinModal from "../components/EditorJoinModal";
+import useAxios from "../hooks/useAxios";
 
 export default function Landing() {
-  const user = useContext(UserContext).data;
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [editorJoinModal, setEditorJoinModal] = useState<boolean>(false);
+  const { data: user } = useAxios({ url: '/auth', method: 'get' });
 
   const handleContinue = () => {
     if (user) {

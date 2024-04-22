@@ -3,12 +3,11 @@ import CodeEditor from "./pages/CodeEditor";
 import Landing from "./pages/Landing";
 import SocketProvider from "./provider/SocketProvider";
 import { Toaster } from "react-hot-toast";
-import { useContext } from "react";
-import { UserContext } from "./provider/UserProvider";
 import SavedFiles from "./pages/SavedFiles";
+import useAxios from "./hooks/useAxios";
 
 export default function App() {
-  const user = useContext(UserContext).data;
+  const { data: user } = useAxios({ url: '/auth', method: 'get' });
   return (
     <>
       <Toaster />
@@ -26,7 +25,7 @@ export default function App() {
               <Navigate to={"/"} />
             )
           } />
-          <Route path="/saved" element={user ? <SavedFiles /> : <Navigate to={"/"} />}/>
+          <Route path="/saved" element={user ? <SavedFiles /> : <Navigate to={"/"} />} />
         </Routes>
       </BrowserRouter>
     </>
