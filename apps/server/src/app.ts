@@ -7,6 +7,7 @@ import "./utils/passport/googleOAuth2Strategy";
 import swagger from "swagger-ui-express";
 import { swaggerSpecs } from "./utils/swagger";
 import ApplicationRoutes from "./routes";
+import path from "path";
 
 const app: Application = express();
 const corsOptions = {
@@ -17,21 +18,21 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '..', 'client')));
 app.use(cookieParser());
 app.use(session({ secret: process.env.SESSION_SECRET as string, resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/', (req: Request, res: Response) => {
+app.get('/health', (req: Request, res: Response) => {
     res.send('Hey Nabeel!');
 });
-
 app.use('/api-docs', swagger.serve, swagger.setup(swaggerSpecs));
 
-app.use(ApplicationRoutes);
+app.use('/api', ApplicationRoutes);
 
 app.get("*", (req: Request, res: Response, next: NextFunction) => {
-    res.status(404).send("Page not found!");
+    res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
 });
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {

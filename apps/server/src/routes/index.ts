@@ -9,7 +9,8 @@ import {
     signInWithGoogleSuccess,
     updateCode,
     getCodeById,
-    runCode
+    runCode,
+    logout
 } from "../controllers";
 import { requireAuth } from "../middlewares/requireAuth";
 const router = express.Router();
@@ -34,13 +35,66 @@ const router = express.Router();
  *                 email:
  *                   type: string
  */
-router.get('/api/auth', getAuth);
-
-router.get('/api/oauth2/google', signInWithGoogle());
-router.get('/api/oauth2/google/redirect', signInWithGoogleRedirect());
-router.get('/api/oauth2/google/success', signInWithGoogleSuccess);
-router.get('/api/oauth2/google/failed', signInWithGoogleFailed);
-
+router.get('/auth', getAuth)
+/**
+ * @swagger
+ * /api/auth:
+ *   delete:
+ *     summary: Logout the current user
+ *     description: Logout the currently authenticated user
+ *     responses:
+ *       204:
+ *         description: Logout successful
+ *       401:
+ *         description: Unauthorized - user not authenticated
+ *       500:
+ *         description: Internal server error
+ */
+router.delete('/auth', logout);
+/**
+ * @swagger
+ * /api/oauth2/google:
+ *   get:
+ *     summary: Initiate Google OAuth2 authentication
+ *     description: Redirects the user to Google for authentication
+ *     responses:
+ *       302:
+ *         description: Redirects to Google OAuth2 authentication page
+ */
+router.get('/oauth2/google', signInWithGoogle());
+/**
+ * @swagger
+ * /api/oauth2/google/redirect:
+ *   get:
+ *     summary: Callback endpoint for Google OAuth2 authentication
+ *     description: Callback URL to handle redirection from Google after authentication
+ *     responses:
+ *       302:
+ *         description: Redirects to the appropriate success or failure URL
+*/
+router.get('/oauth2/google/redirect', signInWithGoogleRedirect());
+/**
+ * @swagger
+ * /api/oauth2/google/success:
+ *   get:
+ *     summary: Successful Google OAuth2 authentication
+ *     description: Redirects to this URL after successful authentication with Google
+ *     responses:
+ *       200:
+ *         description: Success
+*/
+router.get('/oauth2/google/success', signInWithGoogleSuccess);
+/**
+ * @swagger
+ * /api/oauth2/google/failed:
+ *   get:
+ *     summary: Failed Google OAuth2 authentication
+ *     description: Redirects to this URL after failed authentication with Google
+ *     responses:
+ *       200:
+ *         description: Failure
+*/
+router.get('/oauth2/google/failed', signInWithGoogleFailed);
 /**
  * @swagger
  * /api/code:
@@ -72,7 +126,7 @@ router.get('/api/oauth2/google/failed', signInWithGoogleFailed);
  *                     type: string
  *                     format: date-time
  */
-router.get('/api/code', requireAuth, getCodeByUserId);
+router.get('/code', requireAuth, getCodeByUserId);
 /**
  * @swagger
  * /api/code:
@@ -115,7 +169,7 @@ router.get('/api/code', requireAuth, getCodeByUserId);
  *                   type: string
  *                   format: date-time
  */
-router.post('/api/code', requireAuth, postCode);
+router.post('/code', requireAuth, postCode);
 /**
  * @swagger
  * /api/code/{id}:
@@ -158,11 +212,56 @@ router.post('/api/code', requireAuth, postCode);
  *                   type: string
  *                   format: date-time
  */
-router.put('/api/code', requireAuth, updateCode);
-
-router.get('/api/code/:id', requireAuth, getCodeById);
-
-router.post('/api/run-code', requireAuth, runCode)
-
+router.put('/code', requireAuth, updateCode);
+/**
+ * @swagger
+ * /api/code/{id}:
+ *   get:
+ *     summary: Get code by ID
+ *     description: Retrieves code by its unique identifier
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Code found
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Not found
+ *       500:
+ *         description: Internal server error
+ * 
+ */
+router.get('/code/:id', requireAuth, getCodeById);
+/**
+ * @swagger
+ * /api/run-code:
+ *   post:
+ *     summary: Run code
+ *     description: Executes the provided code
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               code:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Execution successful
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/run-code', requireAuth, runCode);
 
 export default router;
